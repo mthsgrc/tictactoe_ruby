@@ -5,7 +5,7 @@
 require "pry"
 
 class Match
-  attr_reader :player1, :player2
+  attr_reader :player1, :player2, :WIN_CONDITIONS
 
   def initialize
     print "Insert name of P1: "
@@ -16,47 +16,47 @@ class Match
     player2 = gets.chomp.to_s
     @player2 = Player.new(player2, "o")
 
+
+    @WIN_CONDITIONS = false
+
     @board = Board.new
+
+
+
     player_turns
   end
 
   def player_turns
-    move = 0
-    until move >= 1 && move <= 9
-      print "select a tile with the matching number: "
-      move = gets.chomp.to_i
-    end
-    move = move.to_s
     # binding.pry
-    @board.update_board(@player1, move)
+    while @WIN_CONDITIONS == false
+
+      move = 0
+      until move >= 1 && move <= 9
+        print "select a tile with the matching number: "
+        move = gets.chomp.to_i
+      end
+      move = move.to_s
+      @board.update_board(@player1, move)
+      # binding.pry
+      check_victory(@player1)
+    end
+
+    puts "There is a winner!"
   end
 
-  def check_victory
-    @WIN_CONDITIONS =[
-      (@board.tiles[0][0] == "x" && @board.tiles[0][1] == "x" && @board.tiles[0][2] == "x") ||
-      (@board.tiles[0][0] == "o" && @board.tiles[0][1] == "o" && @board.tiles[0][2] == "o") ||
+  def check_victory(player)
+    @WIN_CONDITIONS = 
+      (@board.tiles[0][0] == player.signal && @board.tiles[0][1] == player.signal && @board.tiles[0][2] == player.signal) ||
+      (@board.tiles[1][0] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[1][2] == player.signal) ||
+      (@board.tiles[2][0] == player.signal && @board.tiles[2][1] == player.signal && @board.tiles[2][2] == player.signal) ||
+      (@board.tiles[0][0] == player.signal && @board.tiles[1][0] == player.signal && @board.tiles[2][0] == player.signal) ||
+      (@board.tiles[0][1] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][1] == player.signal) ||
+      (@board.tiles[0][2] == player.signal && @board.tiles[1][2] == player.signal && @board.tiles[2][2] == player.signal) ||
+      (@board.tiles[0][0] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][2] == player.signal) ||
+      (@board.tiles[0][2] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][0] == player.signal) 
 
-      (@board.tiles[1][0] == "x" && @board.tiles[1][1] == "x" && @board.tiles[1][2] == "x") ||
-      (@board.tiles[1][0] == "o" && @board.tiles[1][1] == "o" && @board.tiles[1][2] == "o") ||
-
-      (@board.tiles[2][0] == "x" && @board.tiles[2][1] == "x" && @board.tiles[2][2] == "x") ||
-      (@board.tiles[2][0] == "o" && @board.tiles[2][1] == "o" && @board.tiles[2][2] == "o") ||
-
-      (@board.tiles[0][0] == "x" && @board.tiles[1][0] == "x" && @board.tiles[2][0] == "x") ||
-      (@board.tiles[0][0] == "o" && @board.tiles[1][0] == "o" && @board.tiles[2][0] == "o") ||
-
-      (@board.tiles[0][1] == "x" && @board.tiles[1][1] == "x" && @board.tiles[2][1] == "x") ||
-      (@board.tiles[0][1] == "o" && @board.tiles[1][1] == "o" && @board.tiles[2][1] == "o") ||
-
-      (@board.tiles[0][2] == "x" && @board.tiles[1][2] == "x" && @board.tiles[2][2] == "x") ||
-      (@board.tiles[0][2] == "o" && @board.tiles[1][2] == "o" && @board.tiles[2][2] == "o") ||
-
-      (@board.tiles[0][0] == "x" && @board.tiles[1][1] == "x" && @board.tiles[2][2] == "x") ||
-      (@board.tiles[0][0] == "o" && @board.tiles[1][1] == "o" && @board.tiles[2][2] == "o") ||
-
-      (@board.tiles[0][2] == "x" && @board.tiles[1][1] == "x" && @board.tiles[2][0] == "x") ||
-      (@board.tiles[0][0] == "o" && @board.tiles[1][1] == "o" && @board.tiles[2][0] == "o")
-    ]
+    @WIN_CONDITIONS
+    binding.pry
   end
 
 end
@@ -68,8 +68,6 @@ class Player
     @name = name
     @signal = signal
   end
-
-
 end
 
 
@@ -88,7 +86,7 @@ class Board
   end
 
   def update_board(player, move)
-    binding.pry
+    # binding.pry
     case move
     when "1" then self.tiles[0][0] = player.signal
     when "2" then self.tiles[0][1] = player.signal
@@ -99,9 +97,10 @@ class Board
     when "7" then self.tiles[2][0] = player.signal
     when "8" then self.tiles[2][1] = player.signal
     when "9" then self.tiles[2][2] = player.signal
-    else puts "ERROR"
-
+      # else puts "ERROR"
     end
+    # check_victory
+
     @tiles.each do |value|
       puts "#{value}"
     end
