@@ -8,6 +8,7 @@ class Match
   attr_reader :player1, :player2, :WIN_CONDITIONS
 
   def initialize
+
     print "Insert name of P1: "
     player1 = gets.chomp.to_s
     @player1 = Player.new(player1, "x")
@@ -16,50 +17,65 @@ class Match
     player2 = gets.chomp.to_s
     @player2 = Player.new(player2, "o")
 
+    @board = Board.new
 
     @WIN_CONDITIONS = false
 
-    @board = Board.new
-
-
 
     player_turns
+
   end
 
   def player_turns
     # binding.pry
     while @WIN_CONDITIONS == false
 
-      move = 0
-      until move >= 1 && move <= 9
-        print "select a tile with the matching number: "
-        move = gets.chomp.to_i
+      for player in [@player1, @player2]
+
+        move = 0
+        until (move >= 1 && move <= 9)
+          print "select a tile with the matching number: "
+          move = gets.chomp.to_i
+        end
+        move = move.to_s
+        @board.update_board(player, move)
+        # binding.pry
+
+        if check_victory(player) == true
+          puts "WINNER iS #{player.name}"
+          exit
+        end
+
       end
-      move = move.to_s
-      @board.update_board(@player1, move)
-      # binding.pry
-      check_victory(@player1)
     end
-
-    puts "There is a winner!"
-  end
-
-  def check_victory(player)
-    @WIN_CONDITIONS = 
-      (@board.tiles[0][0] == player.signal && @board.tiles[0][1] == player.signal && @board.tiles[0][2] == player.signal) ||
-      (@board.tiles[1][0] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[1][2] == player.signal) ||
-      (@board.tiles[2][0] == player.signal && @board.tiles[2][1] == player.signal && @board.tiles[2][2] == player.signal) ||
-      (@board.tiles[0][0] == player.signal && @board.tiles[1][0] == player.signal && @board.tiles[2][0] == player.signal) ||
-      (@board.tiles[0][1] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][1] == player.signal) ||
-      (@board.tiles[0][2] == player.signal && @board.tiles[1][2] == player.signal && @board.tiles[2][2] == player.signal) ||
-      (@board.tiles[0][0] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][2] == player.signal) ||
-      (@board.tiles[0][2] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][0] == player.signal) 
-
-    @WIN_CONDITIONS
-    binding.pry
   end
 
 end
+
+# end
+
+
+
+def check_victory(player)
+  # binding.pry
+  @WIN_CONDITIONS =
+    (@board.tiles[0][0] == player.signal && @board.tiles[0][1] == player.signal && @board.tiles[0][2] == player.signal) ||
+    (@board.tiles[1][0] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[1][2] == player.signal) ||
+    (@board.tiles[2][0] == player.signal && @board.tiles[2][1] == player.signal && @board.tiles[2][2] == player.signal) ||
+    (@board.tiles[0][0] == player.signal && @board.tiles[1][0] == player.signal && @board.tiles[2][0] == player.signal) ||
+    (@board.tiles[0][1] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][1] == player.signal) ||
+    (@board.tiles[0][2] == player.signal && @board.tiles[1][2] == player.signal && @board.tiles[2][2] == player.signal) ||
+    (@board.tiles[0][0] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][2] == player.signal) ||
+    (@board.tiles[0][2] == player.signal && @board.tiles[1][1] == player.signal && @board.tiles[2][0] == player.signal)
+
+
+  if @WIN_CONDITIONS == true
+    # puts "#{player.name} is winner!"
+    return true
+  end
+end
+
+
 
 
 class Player
