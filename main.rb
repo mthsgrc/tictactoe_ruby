@@ -5,7 +5,7 @@
 require "pry"
 
 class Match
-  attr_reader :player1, :player2, :WIN_CONDITIONS
+  attr_reader :player1, :player2, :WIN_CONDITIONS, :board
 
   def initialize
 
@@ -31,29 +31,43 @@ class Match
     while @WIN_CONDITIONS == false
 
       for player in [@player1, @player2]
-
         move = 0
-        until (move >= 1 && move <= 9)
-          print "select a tile with the matching number: "
+        # binding.pry
+        until (move >= 1 && move <= 9) && check_move(move) == true
+
+          print "#{player.name}, select a tile with the matching number: "
           move = gets.chomp.to_i
         end
         move = move.to_s
         @board.update_board(player, move)
-        # binding.pry
 
         if check_victory(player) == true
           puts "WINNER iS #{player.name}"
           exit
         end
-
       end
     end
   end
 
+  def check_move(move)
+    # binding.pry
+    case move
+
+    when 1 then @board.tiles[0][0] == "1" ? true : false
+    when 2 then @board.tiles[0][1] == "2" ? true : false
+    when 3 then @board.tiles[0][2] == "3" ? true : false
+    when 4 then @board.tiles[1][0] == "4" ? true : false
+    when 5 then @board.tiles[1][1] == "5" ? true : false
+    when 6 then @board.tiles[1][2] == "6" ? true : false
+    when 7 then @board.tiles[2][0] == "7" ? true : false
+    when 8 then @board.tiles[2][1] == "8" ? true : false
+    when 9 then @board.tiles[2][2] == "9" ? true : false
+
+    else return true
+    end
+    # binding.pry
+  end
 end
-
-# end
-
 
 
 def check_victory(player)
