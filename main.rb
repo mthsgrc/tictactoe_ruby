@@ -20,8 +20,13 @@ class Match
 
   def player_turns
     @moves = 0
+
+    play_order = who_first
+
+    # binding.pry
+
     while @WIN_CONDITIONS == false
-      for player in [@player1, @player2]
+      for player in play_order
         move = 0
         until (move >= 1 && move <= 9) && check_move(move) == true
           puts "#{player.name}'s turn, with #{player.signal}."
@@ -43,6 +48,14 @@ class Match
         end
       end
     end
+  end
+
+  def who_first
+  	if [1, 2].sample == 1
+  		return [@player1, @player2]
+  	else
+  		return [@player2, @player1]
+  	end
   end
 
   def check_move(move)
