@@ -28,22 +28,28 @@ class Match
 
   def player_turns
     # binding.pry
+    @moves = 0
     while @WIN_CONDITIONS == false
 
-      for player in [@player1, @player2]
+      for player in [@player1, @player2].sample(2)
         move = 0
         # binding.pry
         until (move >= 1 && move <= 9) && check_move(move) == true
-
-          print "#{player.name}, select a tile with the matching number: "
+          puts "#{player.name}'s turn, with #{player.signal}."
+          print "Select a tile with the matching number: "
           move = gets.chomp.to_i
         end
         move = move.to_s
         @board.update_board(player, move)
-
+        @moves += 1
         if check_victory(player) == true
-          puts "WINNER iS #{player.name}"
+          puts "WINNER iS #{player.name} with #{player.signal}."
           exit
+        elsif @moves == 9
+          print "Draw! Try again..."
+          puts
+          @board.new_board
+          player_turns
         end
       end
     end
@@ -90,8 +96,6 @@ def check_victory(player)
 end
 
 
-
-
 class Player
   attr_reader :name, :signal
   def initialize(name, signal)
@@ -105,6 +109,17 @@ class Board
   attr_accessor :tiles
 
   def initialize
+    @tiles = [
+      ["1", "2", "3"],
+      ["4", "5", "6"],
+      ["7", "8", "9"]
+    ]
+    @tiles.each do |value|
+      puts "#{value}"
+    end
+  end
+
+  def new_board
     @tiles = [
       ["1", "2", "3"],
       ["4", "5", "6"],
@@ -130,10 +145,11 @@ class Board
       # else puts "ERROR"
     end
     # check_victory
-
+    puts
     @tiles.each do |value|
       puts "#{value}"
     end
+    puts
   end
 end
 
